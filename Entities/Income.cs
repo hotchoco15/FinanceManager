@@ -18,7 +18,6 @@ namespace Entities
 		[StringLength(40)]
 		public string? IncomeType { get; set; }
 	
-	
 	        public double? IncomeAmount { get; set; }
 	
 		[StringLength(40)]
