@@ -40,10 +40,10 @@ namespace FinanceManager.Controllers
                 ViewBag.SearchString = searchString;
 
 
-				fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+		fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
                 toDate = DateTime.Today;
 
-				ViewBag.ToDate = toDate;
+		ViewBag.ToDate = toDate;
                 ViewBag.FromDate = fromDate;
 
 
@@ -63,27 +63,27 @@ namespace FinanceManager.Controllers
 
             else 
             {
-				ViewBag.SearchBy = searchBy;
-				ViewBag.SearchString = searchString;
+		ViewBag.SearchBy = searchBy;
+		ViewBag.SearchString = searchString;
                 ViewBag.ToDate = toDate;
                 ViewBag.FromDate = fromDate;
 
 
-				List<IncomeResponse> filteredIncomes = await _incomeService.GetSelectedIncomes(searchBy, searchString, fromDate, toDate);
+		List<IncomeResponse> filteredIncomes = await _incomeService.GetSelectedIncomes(searchBy, searchString, fromDate, toDate);
 
 
                 if (filteredIncomes.Count > 0)
                 { 
                     ViewBag.Last = filteredIncomes.Last().IncomeID;
                     ViewBag.Sum = filteredIncomes.Sum(i => i.IncomeAmount);	
-				}
+		}
                 else
                 {
                     ViewBag.Message = "empty";
-				}
+		}
 
-				return View(filteredIncomes);
-			}
+		return View(filteredIncomes);
+	     }
         }
 
         [Route("[action]")]
@@ -105,24 +105,23 @@ namespace FinanceManager.Controllers
         {
             if (!ModelState.IsValid) 
             {
-				ViewBag.IncomeOptions = new Dictionary<string, string>()
-			    {
-				    {"MainIncome", "주수입"},
-				    {"ExtraIncome", "부수입"}
-			    };
+		ViewBag.IncomeOptions = new Dictionary<string, string>()
+	        {
+		    {"MainIncome", "주수입"},
+		    {"ExtraIncome", "부수입"}
+	        };
 
-				ViewBag.Errors = ModelState.Values.SelectMany(error => error.Errors).Select(e => e.ErrorMessage).ToList();
-				return View();
-			}
+		ViewBag.Errors = ModelState.Values.SelectMany(error => error.Errors).Select(e => e.ErrorMessage).ToList();
+		return View();
+	    }
 
 
-			IncomeResponse incomeResponse = await _incomeService.AddIncome(incomeAddRequest);
-
-			return RedirectToAction("Index");
+		IncomeResponse incomeResponse = await _incomeService.AddIncome(incomeAddRequest);
+		return RedirectToAction("Index");
         }
 
-		[Route("[action]/{incomeID}")]
-		[HttpGet]
+	[Route("[action]/{incomeID}")]
+	[HttpGet]
         public async Task<IActionResult> Update(Guid incomeID)
         {
             IncomeResponse? incomeResponse = await _incomeService.GetIncomeByIncomeID(incomeID);
@@ -134,18 +133,18 @@ namespace FinanceManager.Controllers
             IncomeUpdateRequest incomeUpdateRequest = incomeResponse.ToIncomeUpdateRequest();
 
 			ViewBag.IncomeOptions = new Dictionary<string, string>()
-				{
-					{"MainIncome", "주수입"},
-					{"ExtraIncome", "부수입"}
-				};
+			{
+				{"MainIncome", "주수입"},
+				{"ExtraIncome", "부수입"}
+			};
 
 
 			return View(incomeUpdateRequest);
         }
 
-		[Route("[action]/{incomeID}")]
-		[HttpPost]
-		public async Task<IActionResult> Update(IncomeUpdateRequest incomeUpdateRequest)
+	[Route("[action]/{incomeID}")]
+	[HttpPost]
+	public async Task<IActionResult> Update(IncomeUpdateRequest incomeUpdateRequest)
         {
             IncomeResponse? incomeResponse = await _incomeService.GetIncomeByIncomeID(incomeUpdateRequest.IncomeID);
 
@@ -161,15 +160,15 @@ namespace FinanceManager.Controllers
             }
             else
             {
-				ViewBag.IncomeOptions = new Dictionary<string, string>()
-				{
-					{"MainIncome", "주수입"},
-					{"ExtraIncome", "부수입"}
-				};
+		ViewBag.IncomeOptions = new Dictionary<string, string>()
+		{
+			{"MainIncome", "주수입"},
+			{"ExtraIncome", "부수입"}
+		};
 
-				ViewBag.Errors = ModelState.Values.SelectMany(error => error.Errors).Select(e => e.ErrorMessage).ToList();
-				return View(incomeResponse.ToIncomeUpdateRequest());
-			}
+		ViewBag.Errors = ModelState.Values.SelectMany(error => error.Errors).Select(e => e.ErrorMessage).ToList();
+		return View(incomeResponse.ToIncomeUpdateRequest());
+	     }
         }
 
 
@@ -188,7 +187,7 @@ namespace FinanceManager.Controllers
         }
 
         [HttpPost]
-		[Route("[action]/{incomeID}")]
+	[Route("[action]/{incomeID}")]
         public async Task<IActionResult> Delete(IncomeUpdateRequest result)
         {
             IncomeResponse? incomeResponse = await _incomeService.GetIncomeByIncomeID(result.IncomeID);
@@ -201,7 +200,7 @@ namespace FinanceManager.Controllers
             await _incomeService.DeleteIncome(result.IncomeID);
 
             return RedirectToAction("Index");
-		}
+	}
 
 
         [Route("IncomesExcel")]
@@ -212,5 +211,5 @@ namespace FinanceManager.Controllers
             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "incomes.xlsx");
 
         }
-	}
+     }
 }
