@@ -26,10 +26,10 @@
 		<div>
 			<label asp-for="ExpenseType">항목</label>
 			<select class="category" asp-for="ExpenseType">
-				@foreach (var type in ViewBag.ExpenseOptions)
-				{
-					<option value="@type.Key">@type.Value</option>
-				}
+			@foreach (var type in ViewBag.ExpenseOptions)
+			{
+				<option value="@type.Key">@type.Value</option>
+			}
 			</select>
 			<span asp-validation-for="ExpenseType" class="red"></span>
 		</div>
