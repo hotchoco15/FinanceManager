@@ -51,20 +51,20 @@ namespace ServiceContracts.DTO
             };
         }
 
-		public static string GetDisplayName(this string value)
-		{
-			if (value == "MainIncome")
-            {
-                return "주수입";
-            }
+	public static string GetDisplayName(this string value)
+	{
+	    if (value == "MainIncome")
+	    {
+		return "주수입";
+	    }
             else if (value == "ExtraIncome")
             {
                 return "부수입";
-			}
+	    }
             else 
             { 
                 return "없음"; 
             }
-		}
 	}
+     }
 }
