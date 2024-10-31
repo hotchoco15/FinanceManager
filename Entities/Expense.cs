@@ -12,21 +12,21 @@ namespace Entities
     /// </summary>
     public class Expense
     {
-		[Key]
-		public Guid ExpenseID { get; set; }
+	[Key]
+	public Guid ExpenseID { get; set; }
 
         public DateTime? DateOfExpense { get; set; }
 
-		[StringLength(40)]
-		public string? ExpenseName { get; set; }
+	[StringLength(40)]
+	public string? ExpenseName { get; set; }
 
-		[StringLength(40)]
-		public string? ExpenseType { get; set; }
+	[StringLength(40)]
+	public string? ExpenseType { get; set; }
 
 
         public double? ExpenseAmount { get; set; }
 
-		[StringLength(40)]
-		public string? ExpenseRemark { get; set; }
+	[StringLength(40)]
+	public string? ExpenseRemark { get; set; }
     }
 }
