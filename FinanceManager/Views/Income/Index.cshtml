@@ -1,0 +1,144 @@
+﻿@model IEnumerable<IncomeResponse>
+
+@{
+	ViewBag.Title = "Income";
+}
+
+<form asp-controller="Income" asp-action="Index" method="get">
+	<div>
+		<span class="text1"><h1>수입</h1></span>
+		<span class="text2"><a asp-controller="Income" asp-action="Create"><h2>메모추가</h2></a></span>
+		<span class="text2">
+			<a asp-controller="Income" asp-action="IncomesExcel" class="ml"
+			   asp-route-name1="@(ViewBag.SearchBy != null ? ViewBag.SearchBy : null)"
+			   asp-route-name2="@(ViewBag.SearchString != null ? ViewBag.SearchString : null)"
+			   asp-route-name3="@(ViewBag.FromDate != null ? ViewBag.FromDate.ToString("yyyy-MM-dd") : null)"
+			   asp-route-name4="@(ViewBag.ToDate != null ? ViewBag.ToDate.ToString("yyyy-MM-dd") : null)"
+			   asp-route-name5="@(ViewBag.Sum!= null ? ViewBag.Sum.ToString() : null)"><h2>엑셀다운로드</h2></a>
+		</span>
+		<span class="text2"><a asp-controller="IncomeUpload" asp-action="IncomeUpload"><h2>엑셀업로드</h2></a></span>
+	</div>
+
+
+
+	<div class="box">
+		<div class="section">
+			<select class="category" name="searchBy">
+				@foreach (var type in ViewBag.SearchType)
+				{
+					if (type.Key == ViewBag.SearchBy)
+					{
+						<option value="@type.Key" selected="selected">@type.Value</option>
+					}
+					else
+					{
+						<option value="@type.Key">@type.Value</option>
+					}
+				}
+			</select>
+		</div>
+
+		<div class="section">
+			<input class="searchbar" type="text" name="searchString" placeholder="검색어를 입력해주세요" value="@ViewBag.SearchString" />
+		</div>
+
+		<div class="section">
+			<input class="fromdate" type="date" name="fromDate" value="@ViewBag.FromDate" />
+		</div>
+
+		<div class="section">
+			<input class="todate" type="date" name="toDate" value="@ViewBag.ToDate" />
+		</div>
+
+		<div class="section">
+			<button class="searchbutton" type="submit" onclick="searchIncome()">Search</button>
+		</div>
+	</div>
+
+	@if (ViewBag.Message == "empty")
+	{
+		<script type="text/javascript">
+			alert("일치하는 내역이 없습니다");
+		</script>
+	}
+
+	<span><h3>@ViewBag.InitialMessage</h3></span>
+	
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>날짜</th>
+				<th>이름</th>
+				<th>항목</th>
+				<th>금액</th>
+				<th>비고</th>
+				<th>합계</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(IncomeResponse income in Model)
+			{
+				<tr>
+					<td style="width:15.5%">@income.DateOfIncome?.ToString("yyyy-MM-dd")</td>
+					<td style="width:15.5%">@income.IncomeName</td>
+					<td style="width:15.5%">@income.IncomeType?.GetDisplayName()</td>
+					<td style="width:15.5%">@String.Format("{0:N}", income.IncomeAmount)</td>
+					<td style="width:15.5%">@income.IncomeRemark</td>
+					<td style="width:15.5%"></td>
+					<td style="width:7%">
+						<a asp-controller="Income" asp-action="Update" asp-route-incomeID="@income.IncomeID">수정</a>
+						<a asp-controller="Income" asp-action="Delete" asp-route-incomeID="@income.IncomeID">삭제</a>
+					</td>
+					@if (income.IncomeID.Equals(ViewBag.Last))
+					{
+						<tr>
+							<td style="width:15.5%"></td>
+							<td style="width:15.5%"></td>
+							<td style="width:15.5%"></td>
+							<td style="width:15.5%"></td>
+							<td style="width:15.5%"></td>
+							<td style="width:15.5%">@String.Format("{0:N}", ViewBag.Sum)</td>
+							<td style="width:7%"></td>
+						</tr>
+					}	
+				</tr>	
+			}
+		</tbody>
+	</table>
+</form>
+
+<script>
+	function searchIncome() {
+
+		let fromdate = document.querySelector(".fromdate");
+		let todate = document.querySelector(".todate");
+		let str = document.querySelector(".searchbar");
+		let category = document.querySelector(".category");
+
+
+		if (fromdate.value === "" && todate.value != "") {
+			alert("시작일과 종료일을 입력해주세요");
+			return false;
+		}
+		if (fromdate.value != "" && todate.value === "") {
+			alert("시작일과 종료일을 입력해주세요");
+			return false;
+		}
+
+		if (fromdate.value > todate.value) {
+			alert("시작일을 종료일 이전으로 입력해주세요");
+			return false;
+		}
+
+		if ((category.value === "MainIncome" && str.value != "") || (category.value === "ExtraIncome" && str.value != "")) {
+			alert("항목과 검색어 중 하나만 입력해주세요");
+			return false;
+		}
+		if (category.value === "NotSelected" && fromdate.value === "" && todate.value === "" && str.value === "") {
+			alert("검색조건을 하나 이상 입력해주세요");
+			return false;
+		}		
+	}
+</script>

@@ -1,0 +1,42 @@
+[
+  {
+    "ExpenseID": "76A87F9B-49E2-4F85-A2A1-6988615852C8",
+    "DateOfExpense": "2024-10-05",
+    "ExpenseName": "교통비",
+    "ExpenseType": "Transportation",
+    "ExpenseAmount": 65000,
+    "ExpenseRemark": ""
+  },
+  {
+    "ExpenseID": "AD739691-FF88-4E3E-B698-83B9072A24EF",
+    "DateOfExpense": "2024-10-08",
+    "ExpenseName": "옷",
+    "ExpenseType": "Shopping",
+    "ExpenseAmount": 75000,
+    "ExpenseRemark": ""
+  },
+  {
+    "ExpenseID": "75C4CD52-53F7-4416-AA60-C17AB75A8689",
+    "DateOfExpense": "2024-10-10",
+    "ExpenseName": "점심",
+    "ExpenseType": "Food",
+    "ExpenseAmount": 9000,
+    "ExpenseRemark": ""
+  },
+  {
+    "ExpenseID": "10251E15-5615-4C4F-87CE-69C0EA504AFE",
+    "DateOfExpense": "2024-10-10",
+    "ExpenseName": "카페",
+    "ExpenseType": "Food",
+    "ExpenseAmount": 3500,
+    "ExpenseRemark": ""
+  },
+  {
+    "ExpenseID": "2A5EF37F-9255-4F60-9C89-A0A8B6AEA114",
+    "DateOfExpense": "2024-10-15",
+    "ExpenseName": "보험료",
+    "ExpenseType": "InsuranceFee",
+    "ExpenseAmount": 32000,
+    "ExpenseRemark": ""
+  }
+]

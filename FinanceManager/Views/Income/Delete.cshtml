@@ -1,0 +1,60 @@
+﻿@model IncomeResponse
+
+@{
+	ViewBag.Title = "수입 삭제";
+}
+
+<form asp-controller="Income" asp-action="Delete" method="post">
+	<span class="text1"><h1>수입 삭제</h1></span>
+
+	<input type="hidden" asp-for="IncomeID" />
+
+	<div class="item">
+		<div>
+			<label asp-for="DateOfIncome">날짜</label>
+			<input type="date" asp-for="DateOfIncome" disabled="disabled" />
+			<span asp-validation-for="DateOfIncome" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeName" >이름</label>
+			<input type="text" asp-for="IncomeName" disabled="disabled" />
+			<span asp-validation-for="IncomeName" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeType">항목</label>
+			<input type="text" asp-for="IncomeType" disabled="disabled">
+			<span asp-validation-for="IncomeType" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeAmount">금액</label>
+			<input type="number" asp-for="IncomeAmount" disabled="disabled" />
+			<span asp-validation-for="IncomeAmount" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeRemark">비고</label>
+			<input type="text" asp-for="IncomeRemark" disabled="disabled" />
+		</div>
+
+		<div>
+			<button class="addbutton" type="submit">삭제</button>
+			@if(ViewBag.Errors != null)
+			{
+				<div>
+					<ul>
+						@foreach (string error in ViewBag.Errors)
+						{
+							<li>@error</li>
+						}
+					</ul>
+				</div>
+			}
+		</div>
+	 </div>
+</form>
+
+
+

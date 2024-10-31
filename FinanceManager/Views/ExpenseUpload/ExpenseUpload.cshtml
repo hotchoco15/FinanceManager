@@ -1,0 +1,21 @@
+﻿@{
+	ViewBag.Title = "엑셀업로드";
+}
+
+<h2>업로드할 파일을 선택하세요</h2>
+<div>
+	<form asp-action="ExpenseUpload" asp-controller="ExpenseUpload" method="post" enctype="multipart/form-data">
+		<div class="item">
+			<div>
+				<div>
+					<input type="file" name="excelFile" class="input"/>
+					<div class="red">@ViewBag.ErrorMessage</div>
+					<div>@ViewBag.Message</div>
+				</div>
+			</div>
+			<div>
+				<button type="submit" class="uploadbutton">첨부</button>
+			</div>
+		</div>
+	</form>
+</div>

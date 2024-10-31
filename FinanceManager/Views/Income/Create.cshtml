@@ -1,0 +1,73 @@
+﻿@model IncomeAddRequest
+
+@{
+	ViewBag.Title = "수입 추가";
+}
+
+<form asp-controller="Income" asp-action="Create" method="post">
+	<span class="text1"><h1>수입 추가</h1></span>
+	
+	<div class="item">
+		<div>
+			<label asp-for="DateOfIncome">날짜</label>
+			<input type="date" asp-for="DateOfIncome" />
+			<span asp-validation-for="DateOfIncome" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeName">이름</label>
+			<input type="text" asp-for="IncomeName" />
+			<span asp-validation-for="IncomeName" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeType">항목</label>
+			<select class="category" asp-for="IncomeType">
+				@foreach (var type in ViewBag.IncomeOptions)
+				{
+					<option value="@type.Key">@type.Value</option>
+				}
+			</select>
+			<span asp-validation-for="IncomeType" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeAmount">금액</label>
+			<input type="number" asp-for="IncomeAmount" />
+			<span asp-validation-for="IncomeAmount" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="IncomeRemark">비고</label>
+			<input type="text" asp-for="IncomeRemark" />
+		</div>
+
+		<div>
+			<button class="addbutton" type="submit">추가</button>
+			@if(ViewBag.Errors != null)
+			{
+				<div>
+					<ul>
+						@foreach (string error in ViewBag.Errors)
+						{
+							<li>@error</li>
+						}
+					</ul>
+				</div>
+			}
+		</div>
+
+	</div>
+
+
+</form>
+
+
+@section scripts
+{
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.4/jquery.validate.min.js" asp-fallback-test="window.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" asp-fallback-test="window.jQuery.validator.unobstrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
+}

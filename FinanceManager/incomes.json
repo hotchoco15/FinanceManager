@@ -1,0 +1,42 @@
+[
+  {
+    "IncomeID": "16800ECE-BAE7-410B-9D20-FE4265951695",
+    "DateOfIncome": "2024-09-01",
+    "IncomeName": "월급",
+    "IncomeType": "MainIncome",
+    "IncomeAmount": 1000000,
+    "IncomeRemark": ""
+  },
+  {
+    "IncomeID": "3FAD9624-8BB7-43B4-8481-4B189CCA54A4",
+    "DateOfIncome": "2024-09-15",
+    "IncomeName": "로또",
+    "IncomeType": "ExtraIncome",
+    "IncomeAmount": 50000,
+    "IncomeRemark": ""
+  },
+  {
+    "IncomeID": "36FEEB02-A3BE-464F-A0B3-F2ECE81F7137",
+    "DateOfIncome": "2024-09-22",
+    "IncomeName": "앱테크",
+    "IncomeType": "ExtraIncome",
+    "IncomeAmount": 12500,
+    "IncomeRemark": ""
+  },
+  {
+    "IncomeID": "B80E20C8-DC39-4330-8242-671CB946F463",
+    "DateOfIncome": "2024-10-01",
+    "IncomeName": "월급",
+    "IncomeType": "MainIncome",
+    "IncomeAmount": 1000000,
+    "IncomeRemark": ""
+  },
+  {
+    "IncomeID": "A5501DA1-BB27-4BCB-9E85-DDA63AB9BBCF",
+    "DateOfIncome": "2024-10-10",
+    "IncomeName": "포인트환급",
+    "IncomeType": "ExtraIncome",
+    "IncomeAmount": 15000,
+    "IncomeRemark": ""
+  }
+]
