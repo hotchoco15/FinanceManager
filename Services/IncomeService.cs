@@ -215,6 +215,27 @@ namespace Services
 				return results;
 			}
 
+			// 항목과 검색어로 조회했을 때
+			if (searchBy != "NotSelected" && !string.IsNullOrEmpty(searchString) && fromDate == null && toDate == null)
+			{
+				results = allIncomes.Where(temp => (temp.IncomeType.Equals(searchBy)) && (temp.IncomeName.Contains(searchString)))
+							.OrderBy(temp => temp.DateOfIncome).ToList();
+
+				return results;
+			}
+
+			// 항목, 검색어, 날짜로 조회했을 때 
+			if (searchBy != "NotSelected" && !string.IsNullOrEmpty(searchString) && fromDate != null && toDate != null)
+			{
+				results = allIncomes.Where(temp => (temp.DateOfIncome >= fromDate && temp.DateOfIncome <= toDate) && (temp.IncomeName.Contains(searchString))
+							&& (temp.IncomeType.Equals(searchBy))).OrderBy(temp => temp.DateOfIncome).ToList();
+
+				return results;
+			}
+
+
+
+
 			return results;
 		}
 

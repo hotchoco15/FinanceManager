@@ -129,10 +129,6 @@
 			return false;
 		}
 
-		if (category.value != "" && category.value != "NotSelected" && str.value != "") {
-			alert("항목과 검색어 중 하나만 입력해주세요");
-			return false;
-		}
 		if (category.value === "NotSelected" && fromdate.value === "" && todate.value === "" && str.value === "") {
 			alert("검색조건을 하나 이상 입력해주세요");
 			return false;

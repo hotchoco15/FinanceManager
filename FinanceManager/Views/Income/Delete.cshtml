@@ -24,7 +24,7 @@
 
 		<div>
 			<label asp-for="IncomeType">항목</label>
-			<input type="text" asp-for="IncomeType" disabled="disabled">
+			<input type="text" value="@Model.IncomeType?.GetDisplayName()" disabled="disabled">
 			<span asp-validation-for="IncomeType" class="red"></span>
 		</div>
 
