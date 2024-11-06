@@ -15,9 +15,9 @@ namespace Services
 {
     public class ExpenseService : IExpenseService
     {
-        private readonly IncomeDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-        public ExpenseService(IncomeDbContext incomeDbContext)
+        public ExpenseService(ApplicationDbContext incomeDbContext)
         {
 	    _db = incomeDbContext;	
 	}
