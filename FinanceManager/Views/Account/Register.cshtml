@@ -1,0 +1,68 @@
+﻿@model RegisterDTO
+
+@{
+	ViewBag.Title = "회원 등록";
+	ViewBag.CurrentUrl = "~/Account/Register";
+}
+
+<form asp-controller="Account" asp-action="Register" method="post">
+	<span class="text1"><h1>회원 등록</h1></span>
+
+	<div class="item">
+		<div>
+			<label asp-for="PersonName">이름</label>
+			<input type="text" asp-for="PersonName" />
+			<span asp-validation-for="PersonName" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="Email">이메일</label>
+			<input type="text" asp-for="Email" data-val="true"
+				   data-val-remote="이미 사용중인 이메일입니다" />
+			<span asp-validation-for="Email" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="Password">비밀번호</label>
+			<input type="password" asp-for="Password" />
+			<span asp-validation-for="Password" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="ConfirmPassword">비밀번호 재입력</label>
+			<input type="password" asp-for="ConfirmPassword" />
+			<span asp-validation-for="ConfirmPassword" class="red"></span>
+		</div>
+
+		<div class="radio">
+			<label asp-for="UserType">관리자 여부</label>
+			<div class="radio-button">
+				<div>
+					<input type="radio" value="User" asp-for="UserType" checked />
+				</div>
+				<div>
+					<label for="User">일반사용자</label>
+				</div>
+				<div>
+					<input type="radio" value="Admin" asp-for="UserType" />
+				</div>
+				<div>
+					<label for="Admin">관리자</label>
+				</div>
+			</div>
+			<span asp-validation-for="UserType" class="red"></span>
+		</div>
+
+
+		<div>
+			<button class="addbutton" type="submit">등록</button>
+		</div>
+	</div>
+</form>
+
+@section scripts {
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.4/jquery.validate.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+}

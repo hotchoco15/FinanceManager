@@ -1,0 +1,36 @@
+﻿@model IEnumerable<ApplicationUser>
+
+@{
+	ViewBag.Title = "Manager";
+}
+<head>
+	<link href="~/StyleSheet.css" rel="stylesheet" />
+</head>
+
+<body>
+<form asp-area = "Admin" asp-controller="Home" asp-action="Index" method="post">
+	<span class="text1"><h1>관리자페이지</h1></span>
+		<span><a asp-controller="Income" asp-action="Index">수입페이지로 이동</a></span>
+		<div class="checkbox-container">
+			<div class="check-border">
+					<h3>권리자 권한주기</h3>
+
+					@foreach (var person in Model)
+					{
+						<div class="input-wrapper">
+							<input type="text" asp-for="@person.PersonName" disabled />
+							<input type="checkbox" name="@person.Email" class="checkbox" value="@person.Email" /><label for="check" class="check"></label>
+						</div>
+					}
+				<div>
+					<button class="addbutton" type="submit">변경</button>
+				</div>
+			</div>
+		</div>
+</form>
+</body>
+
+
+
+
+

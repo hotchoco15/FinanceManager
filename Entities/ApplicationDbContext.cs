@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Entities.IdentityEntities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Entities
 {
-	public class IncomeDbContext : DbContext
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 	{
-		public IncomeDbContext(DbContextOptions options) : base(options){}
+		public ApplicationDbContext(DbContextOptions options) : base(options){}
 		public DbSet<Income> Incomes { get; set; }
 		public DbSet<Expense> Expenses { get; set; }
 

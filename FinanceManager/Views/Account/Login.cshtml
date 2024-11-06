@@ -1,0 +1,45 @@
+﻿@model LoginDTO
+
+@{
+	ViewBag.Title = "로그인";
+	ViewBag.CurrentUrl = "~/Account/Login";
+}
+
+<form asp-controller="Account" asp-action="Login" method="post" 
+asp-route-ReturnUrl="@Context.Request.Query["ReturnUrl"]">
+	<span class="text1"><h1>로그인</h1></span>
+
+	<div class="login">
+		<div>
+			<label asp-for="Email">이메일</label>
+			<input type="text" asp-for="Email" />
+			<span asp-validation-for="Email" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="Password">비밀번호</label>
+			<input type="password" asp-for="Password" />
+			<span asp-validation-for="Password" class="red"></span>
+		</div>
+
+		<div>
+			<button class="addbutton" type="submit">로그인</button>
+			@if (!ViewData.ModelState.IsValid)
+			{
+				foreach (var error in ViewData.ModelState["Login"].Errors)
+				{
+					<div class="red">@error.ErrorMessage</div>
+				}
+			}
+		</div>
+	</div>
+</form>
+
+@section scripts
+{
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.4/jquery.validate.min.js" asp-fallback-test="window.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" asp-fallback-test="window.jQuery.validator.unobtrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
+}

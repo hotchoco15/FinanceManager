@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<ExpenseResponse>
 
 @{
-	ViewBag.Title = "Expense";
+	ViewBag.Title = "지출";
+	ViewBag.CurrentUrl = "~/Expense/Index";
 }
 
 <form asp-controller="Expense" asp-action="Index" method="get">

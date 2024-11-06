@@ -20,9 +20,9 @@ namespace Services
 {
     public class IncomeService : IIncomeService
     {
-        private readonly IncomeDbContext _db;
+        private readonly ApplicationDbContext _db;
 
-		public IncomeService(IncomeDbContext incomeDbContext)
+		public IncomeService(ApplicationDbContext incomeDbContext)
         {
             _db = incomeDbContext;
 		}

@@ -17,16 +17,55 @@
 }
 
 
-.navbar {
+
+.check 
+{
     display: inline-block;
-    font-family:'Times New Roman', Times, serif;
+    margin-left: 5px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.radio
+{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.radio-button {
+    display: flex;
+    margin-left: 10px;
+}
+
+.radio-button > div{
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.radio-button > div > label{
+    display: inline-block;
+    text-align: center;
+}
+
+
+.navbar {
+    font-family: 'Times New Roman', Times, serif;
     font-size: 25px;
     width: 100%;
     background-color: black;
     height: 70px;
     padding: 10px;
     z-index: 1000;
+    display: flex;
+    justify-content: space-between;
 }
+
 
 
 .navbar > ul {
@@ -38,6 +77,7 @@
 .navbar > ul > li {
     display: inline-block;
     width: auto;
+    color: white;
 }
 
 .navbar > ul > li > a {
@@ -46,6 +86,20 @@
     margin-right: 30px;
     text-decoration: none;
 }
+
+.navbar > ul > li > .underline {
+    text-decoration: underline;
+}
+
+
+
+.navbar > ul > li > span {
+    display: inline-block;
+    color: white;
+    margin-right: 30px;
+    text-decoration: none;
+}
+
 
 .text2 > a 
 {
@@ -71,7 +125,10 @@ tbody > tr > td > a
     padding: 15px 15px;
 }
 
-
+h3
+{
+    margin-bottom : 20px;
+}
 
 .content .table {
     border-collapse: collapse;
@@ -88,6 +145,111 @@ tbody > tr > td > a
     padding: 10px;
     text-align: left;
 }
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+.check-border {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e4e4e4;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    margin: 0 auto;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    gap: 10px;
+}
+
+.check-border label {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.check-border input[type="text"] {
+    padding: 8px;
+    border: 1px solid #e4e4e4;
+    border-radius: 8px;
+    font-size: 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.check-border .addbutton {
+    background-color: silver;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 12px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e4e4e4;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    margin: 0 auto;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    gap: 5px;
+}
+
+.login label {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.login input {
+    padding: 8px;
+    border: 1px solid #e4e4e4;
+    border-radius: 8px;
+    font-size: 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login .addbutton {
+    background-color: silver;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 12px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+
+
+
+
+
+
 
 .item 
 {
@@ -115,6 +277,7 @@ tbody > tr > td > a
     width: 100%;
     box-sizing: border-box;
 }
+
 
 .item select 
 {
