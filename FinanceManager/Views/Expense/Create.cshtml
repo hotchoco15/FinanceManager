@@ -8,6 +8,14 @@
 	<span class="text1"><h1>지출 추가</h1></span>
 	
 	<div class="item">
+
+		@{
+			var userId = ViewBag.UserID;
+		}
+
+		<input type ="hidden" asp-for="UserID" value="@userId"/>
+
+
 		<div>
 			<label asp-for="DateOfExpense">날짜</label>
 			<input type="date" asp-for="DateOfExpense" />

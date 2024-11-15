@@ -1,4 +1,6 @@
 ﻿using Entities;
+using Entities.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ServiceContracts;
@@ -14,17 +16,23 @@ namespace FinanceManager.Controllers
     {
         private readonly IIncomeService _incomeService;
 
-        
-        public IncomeController(IIncomeService incomeService)
+		private readonly UserManager<ApplicationUser> _userManager;
+
+
+		public IncomeController(IIncomeService incomeService, UserManager<ApplicationUser> userManager)
         {
             _incomeService = incomeService;
+
+            _userManager = userManager;
         }
 
         [Route("[action]")]
         public async Task<IActionResult> Index(string? searchBy = null, string? searchString = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            //검색
-            ViewBag.SearchType = new Dictionary<string, string>()
+			var userId = _userManager.GetUserId(User);
+
+			//검색
+			ViewBag.SearchType = new Dictionary<string, string>()
             {
                 {"NotSelected", "선택안함"},
                 {"MainIncome", "주수입"},
@@ -33,7 +41,7 @@ namespace FinanceManager.Controllers
 
             if (string.IsNullOrEmpty(searchBy))
             {
-                List<IncomeResponse> incomes = await _incomeService.GetDefaultIncomes(searchBy, searchString, fromDate, toDate);
+                List<IncomeResponse> incomes = await _incomeService.GetDefaultIncomes(searchBy, searchString, fromDate, toDate, userId);
 
                 ViewBag.SearchBy = "00000";
                 ViewBag.SearchString = searchString;
@@ -68,7 +76,7 @@ namespace FinanceManager.Controllers
                 ViewBag.FromDate = fromDate;
 
 
-		        List<IncomeResponse> filteredIncomes = await _incomeService.GetSelectedIncomes(searchBy, searchString, fromDate, toDate);
+		        List<IncomeResponse> filteredIncomes = await _incomeService.GetSelectedIncomes(searchBy, searchString, fromDate, toDate, userId);
 
 
                 if (filteredIncomes.Count > 0)
@@ -95,7 +103,11 @@ namespace FinanceManager.Controllers
                 {"ExtraIncome", "부수입"}
             };
 
-            return View();
+
+			var userId = _userManager.GetUserId(User);
+			ViewBag.UserID = userId;
+
+			return View();
         }
 
         [Route("[action]")]
@@ -123,13 +135,21 @@ namespace FinanceManager.Controllers
 	    [HttpGet]
         public async Task<IActionResult> Update(Guid incomeID)
         {
-            IncomeResponse? incomeResponse = await _incomeService.GetIncomeByIncomeID(incomeID);
+			var userId = _userManager.GetUserId(User);
+			Guid parsedUserId = new Guid(userId);
+
+			IncomeResponse? incomeResponse = await _incomeService.GetIncomeByIncomeID(incomeID);
             if (incomeResponse == null)
             {
                 return RedirectToAction("Index");
             }
 
-            IncomeUpdateRequest incomeUpdateRequest = incomeResponse.ToIncomeUpdateRequest();
+			if (incomeResponse.UserID != parsedUserId)
+			{
+				return Unauthorized();
+			}
+
+			IncomeUpdateRequest incomeUpdateRequest = incomeResponse.ToIncomeUpdateRequest();
 
 			ViewBag.IncomeOptions = new Dictionary<string, string>()
 			{
@@ -175,14 +195,22 @@ namespace FinanceManager.Controllers
         [Route("[action]/{incomeID}")]
         public async Task<IActionResult> Delete(Guid incomeID) 
         {
-            IncomeResponse? incomeResponse = await _incomeService.GetIncomeByIncomeID(incomeID);
+			var userId = _userManager.GetUserId(User);
+			Guid parsedUserId = new Guid(userId);
+
+			IncomeResponse? incomeResponse = await _incomeService.GetIncomeByIncomeID(incomeID);
 
             if(incomeResponse == null) 
             {
                 return RedirectToAction("Index");
             }
 
-            return View(incomeResponse);
+			if (incomeResponse.UserID != parsedUserId)
+			{
+				return Unauthorized();
+			}
+
+			return View(incomeResponse);
         }
 
         [HttpPost]
@@ -203,10 +231,11 @@ namespace FinanceManager.Controllers
 
 
         [Route("IncomesExcel")]
-        public async Task<IActionResult> IncomesExcel(string name1, string name2, string name3, string name4, string name5)
+        public async Task<IActionResult> IncomesExcel(string searchBy, string searchString, string fromDate, string toDate, string sum)
         {
-            
-            MemoryStream memoryStream = await _incomeService.GetExcelDataFromIncome(name1, name2, name3, name4, name5);
+			var userId = _userManager.GetUserId(User);
+
+			MemoryStream memoryStream = await _incomeService.GetExcelDataFromIncome(searchBy, searchString, fromDate, toDate, sum, userId);
             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "incomes.xlsx");
 
         }

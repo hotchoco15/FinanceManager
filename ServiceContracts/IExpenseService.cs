@@ -14,7 +14,7 @@ namespace ServiceContracts
 		/// 이번달의 모든 지출을 보여줍니다
 		/// </summary>
 		/// <returns></returns>
-		Task<List<ExpenseResponse>> GetDefaultExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate);
+		Task<List<ExpenseResponse>> GetDefaultExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId);
 
 
 		/// <summary>
@@ -25,13 +25,13 @@ namespace ServiceContracts
 		/// <param name="fromDate"></param>
 		/// <param name="toDate"></param>
 		/// <returns></returns>
-		Task<List<ExpenseResponse>> GetSelectedExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate);
+		Task<List<ExpenseResponse>> GetSelectedExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId);
 
 
 		/// <summary>
 		/// 지출 건을 추가합니다
 		/// </summary>
-		/// <param name="expenseAddRequest">Expense to add</param>
+		/// <param name="expenseAddRequest"></param>
 		/// <returns></returns>
 		Task<ExpenseResponse> AddExpense(ExpenseAddRequest? expenseAddRequest);
 
@@ -69,15 +69,15 @@ namespace ServiceContracts
 		/// 내역을 엑셀로 출력합니다
 		/// </summary>
 		/// <returns></returns>
-		Task<MemoryStream> GetExcelDataFromExpense(string name1, string name2, string name3, string name4, string name5);
+		Task<MemoryStream> GetExcelDataFromExpense(string searchBy, string searchString, string fromDate, string toDate, string sum, string userId);
 
 
 
 		/// <summary>
-		/// 엑셀에 있는 내역을 DB에 저장합니다다
+		/// 엑셀에 있는 내역을 DB에 저장합니다
 		/// </summary>
 		/// <param name="formFile"></param>
 		/// <returns></returns>
-		Task<int> UploadExpenseFromExcelFile(IFormFile formFile);
+		Task<int> UploadExpenseFromExcelFile(IFormFile formFile, string userId);
 	}
 }

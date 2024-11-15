@@ -15,7 +15,9 @@ namespace Entities
 	[Key]
 	public Guid ExpenseID { get; set; }
 
-        public DateTime? DateOfExpense { get; set; }
+	public Guid UserID { get; set; }
+
+	public DateTime? DateOfExpense { get; set; }
 
 	[StringLength(40)]
 	public string? ExpenseName { get; set; }
@@ -24,7 +26,7 @@ namespace Entities
 	public string? ExpenseType { get; set; }
 
 
-        public double? ExpenseAmount { get; set; }
+    public double? ExpenseAmount { get; set; }
 
 	[StringLength(40)]
 	public string? ExpenseRemark { get; set; }

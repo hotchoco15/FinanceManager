@@ -6,10 +6,17 @@ using Entities.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddControllersWithViews(options =>
+{
+	options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
+
 
 //add services into IOC container
 builder.Services.AddScoped<IIncomeService, IncomeService>();
@@ -17,8 +24,12 @@ builder.Services.AddScoped<IExpenseService, ExpenseService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>
 (opitons => {
-	opitons.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+	opitons.UseSqlServer(
+		builder.Configuration.GetConnectionString("DefaultConnection"),
+		sqlOptions => sqlOptions.MigrationsAssembly("FinanceManager")
+	);
 });
+
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -54,6 +65,11 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 var app = builder.Build();
+
+
+// https È°¼ºÈ­ 
+app.UseHsts();
+app.UseHttpsRedirection();
 
 
 app.UseStaticFiles();

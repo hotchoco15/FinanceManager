@@ -16,7 +16,7 @@ namespace ServiceContracts
 		/// 이번달의 모든 수입을 보여줍니다 
 		/// </summary>
 		/// <returns></returns>
-		Task<List<IncomeResponse>> GetDefaultIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate);
+		Task<List<IncomeResponse>> GetDefaultIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId);
 
 
 		/// <summary>
@@ -27,13 +27,13 @@ namespace ServiceContracts
 		/// <param name="fromDate"></param>
 		/// <param name="toDate"></param>
 		/// <returns></returns>
-		Task<List<IncomeResponse>> GetSelectedIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate);
+		Task<List<IncomeResponse>> GetSelectedIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId);
 
 
 		/// <summary>
 		/// 수입 건을 추가합니다
 		/// </summary>
-		/// <param name="incomeAddRequest">Income to add</param>
+		/// <param name="incomeAddRequest"></param>
 		/// <returns></returns>
 		Task<IncomeResponse> AddIncome(IncomeAddRequest? incomeAddRequest);
 
@@ -72,7 +72,7 @@ namespace ServiceContracts
 		/// 내역을 엑셀로 출력합니다 
 		/// </summary>
 		/// <returns></returns>
-		Task<MemoryStream> GetExcelDataFromIncome(string name1, string name2, string name3, string name4, string name5);
+		Task<MemoryStream> GetExcelDataFromIncome(string searchBy, string searchString, string fromDate, string toDate, string sum, string userId);
 
 
 
@@ -81,7 +81,7 @@ namespace ServiceContracts
 		/// </summary>
 		/// <param name="formFile"></param>
 		/// <returns></returns>
-		Task<int> UploadIncomeFromExcelFile(IFormFile formFile);
+		Task<int> UploadIncomeFromExcelFile(IFormFile formFile, string userId);
 
-    	}
+    }
 }

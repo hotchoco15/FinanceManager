@@ -1,6 +1,9 @@
 ﻿using Entities;
+using Entities.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
@@ -14,17 +17,23 @@ namespace FinanceManager.Controllers
     {
         private readonly IExpenseService _expenseService;
 
-        
-        public ExpenseController(IExpenseService expenseService)
+		private readonly UserManager<ApplicationUser> _userManager;
+
+
+		public ExpenseController(IExpenseService expenseService, UserManager<ApplicationUser> userManager)
         {
-		_expenseService = expenseService;
+		    _expenseService = expenseService;
+
+            _userManager = userManager;
         }
 
         [Route("[action]")]
         public async Task<IActionResult> Index(string? searchBy = null, string? searchString = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            //검색
-            ViewBag.SearchType = new Dictionary<string, string>()
+			var userId = _userManager.GetUserId(User);
+
+			//검색
+			ViewBag.SearchType = new Dictionary<string, string>()
             {
                 {"NotSelected", "선택안함"},
                 {"Housing", "주거비"},
@@ -39,7 +48,7 @@ namespace FinanceManager.Controllers
 
             if (string.IsNullOrEmpty(searchBy))
             {
-                List<ExpenseResponse> expenses = await _expenseService.GetDefaultExpenses(searchBy, searchString, fromDate, toDate);
+				List<ExpenseResponse> expenses = await _expenseService.GetDefaultExpenses(searchBy, searchString, fromDate, toDate, userId);
 
                 ViewBag.SearchBy = "00000";
                 ViewBag.SearchString = searchString;
@@ -61,7 +70,7 @@ namespace FinanceManager.Controllers
 		        fromDate = null;
                 toDate = null;
 
-                return View(expenses);
+				return View(expenses);
             }
 
             else 
@@ -71,7 +80,7 @@ namespace FinanceManager.Controllers
                 ViewBag.ToDate = toDate;
                 ViewBag.FromDate = fromDate;
 
-		        List<ExpenseResponse> filteredExpenses = await _expenseService.GetSelectedExpenses(searchBy, searchString, fromDate, toDate);
+		        List<ExpenseResponse> filteredExpenses = await _expenseService.GetSelectedExpenses(searchBy, searchString, fromDate, toDate, userId);
 
 
                 if (filteredExpenses.Count > 0)
@@ -84,7 +93,7 @@ namespace FinanceManager.Controllers
                     ViewBag.Message = "empty";
                 }
 
-		        return View(filteredExpenses);
+				return View(filteredExpenses);
 	        }
         }
 
@@ -103,7 +112,10 @@ namespace FinanceManager.Controllers
 		        {"Other", "기타"}
 	        };
 
-            return View();
+            var userId = _userManager.GetUserId(User);
+            ViewBag.UserID = userId;
+
+			return View();
         }
 
         [Route("[action]")]
@@ -125,9 +137,9 @@ namespace FinanceManager.Controllers
 
 		        ViewBag.Errors = ModelState.Values.SelectMany(error => error.Errors).Select(e => e.ErrorMessage).ToList();
 		        return View();
-	        } 
+	        }
 
-
+            
 		    ExpenseResponse expenseResponse = await _expenseService.AddExpense(expenseAddRequest);
 
 		    return RedirectToAction("Index");
@@ -137,13 +149,22 @@ namespace FinanceManager.Controllers
 	    [HttpGet]
         public async Task<IActionResult> Update(Guid expenseID)
         {
-	        ExpenseResponse? expenseResponse = await _expenseService.GetExpenseByExpenseID(expenseID);
+			var userId = _userManager.GetUserId(User);
+			Guid parsedUserId = new Guid(userId);
+
+			ExpenseResponse? expenseResponse = await _expenseService.GetExpenseByExpenseID(expenseID);
             if (expenseResponse == null)
             {
                 return RedirectToAction("Index");
             }
 
-	        ExpenseUpdateRequest expenseUpdateRequest = expenseResponse.ToExpenseUpdateRequest();
+            if (expenseResponse.UserID != parsedUserId)
+            {
+                return Unauthorized();
+            }
+
+
+            ExpenseUpdateRequest expenseUpdateRequest = expenseResponse.ToExpenseUpdateRequest();
 
 	        ViewBag.ExpenseOptions = new Dictionary<string, string>()
 	        {
@@ -198,14 +219,22 @@ namespace FinanceManager.Controllers
         [Route("[action]/{expenseID}")]
         public async Task<IActionResult> Delete(Guid expenseID) 
         {
-	        ExpenseResponse? expenseResponse = await _expenseService.GetExpenseByExpenseID(expenseID);
+			var userId = _userManager.GetUserId(User);
+			Guid parsedUserId = new Guid(userId);
+
+			ExpenseResponse? expenseResponse = await _expenseService.GetExpenseByExpenseID(expenseID);
 
             if(expenseResponse == null) 
             {
                 return RedirectToAction("Index");
             }
 
-            return View(expenseResponse);
+			if (expenseResponse.UserID != parsedUserId)
+			{
+				return Unauthorized();
+			}
+
+			return View(expenseResponse);
         }
 
         [HttpPost]
@@ -225,10 +254,11 @@ namespace FinanceManager.Controllers
 	    }
 
 	    [Route("ExpensesExcel")]
-	    public async Task<IActionResult> ExpensesExcel(string name1, string name2, string name3, string name4, string name5)
+	    public async Task<IActionResult> ExpensesExcel(string searchBy, string searchString, string fromDate, string toDate, string sum)
 	    {
-		
-		    MemoryStream memoryStream = await _expenseService.GetExcelDataFromExpense(name1, name2, name3, name4, name5);
+			var userId = _userManager.GetUserId(User);
+
+			MemoryStream memoryStream = await _expenseService.GetExcelDataFromExpense(searchBy, searchString, fromDate, toDate, sum, userId);
 		    return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "expenses.xlsx");
 
 	    }

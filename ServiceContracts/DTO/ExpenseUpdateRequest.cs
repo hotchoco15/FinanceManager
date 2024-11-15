@@ -9,6 +9,8 @@ namespace ServiceContracts.DTO
 {
 	public class ExpenseUpdateRequest
 	{
+		public Guid UserID { get; set; }
+
 		public Guid ExpenseID { get; set; }
 
 
@@ -30,6 +32,7 @@ namespace ServiceContracts.DTO
 		{
 			return new Expense
 			{
+				UserID = UserID,
 				ExpenseName = ExpenseName,
 				DateOfExpense = DateOfExpense,
 				ExpenseType = ExpenseType.ToString(),

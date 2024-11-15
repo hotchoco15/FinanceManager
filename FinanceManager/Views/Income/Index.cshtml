@@ -11,11 +11,11 @@
 		<span class="text2"><a asp-controller="Income" asp-action="Create"><h2>메모추가</h2></a></span>
 		<span class="text2">
 			<a asp-controller="Income" asp-action="IncomesExcel" class="ml"
-			   asp-route-name1="@(ViewBag.SearchBy != null ? ViewBag.SearchBy : null)"
-			   asp-route-name2="@(ViewBag.SearchString != null ? ViewBag.SearchString : null)"
-			   asp-route-name3="@(ViewBag.FromDate != null ? ViewBag.FromDate.ToString("yyyy-MM-dd") : null)"
-			   asp-route-name4="@(ViewBag.ToDate != null ? ViewBag.ToDate.ToString("yyyy-MM-dd") : null)"
-			   asp-route-name5="@(ViewBag.Sum!= null ? ViewBag.Sum.ToString() : null)"><h2>엑셀다운로드</h2></a>
+			   asp-route-searchBy="@(ViewBag.SearchBy != null ? ViewBag.SearchBy : null)"
+			   asp-route-searchString="@(ViewBag.SearchString != null ? ViewBag.SearchString : null)"
+			   asp-route-fromDate="@(ViewBag.FromDate != null ? ViewBag.FromDate.ToString("yyyy-MM-dd") : null)"
+			   asp-route-toDate="@(ViewBag.ToDate != null ? ViewBag.ToDate.ToString("yyyy-MM-dd") : null)"
+			   asp-route-sum="@(ViewBag.Sum!= null ? ViewBag.Sum.ToString() : null)"><h2>엑셀다운로드</h2></a>
 		</span>
 		<span class="text2"><a asp-controller="IncomeUpload" asp-action="IncomeUpload"><h2>엑셀업로드</h2></a></span>
 	</div>

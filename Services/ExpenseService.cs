@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity;
+using Entities.IdentityEntities;
+using System.Security.Claims;
 
 namespace Services
 {
@@ -19,8 +22,8 @@ namespace Services
 
         public ExpenseService(ApplicationDbContext incomeDbContext)
         {
-	    _db = incomeDbContext;	
-	}
+			_db = incomeDbContext;	
+		}
 
         public async Task<ExpenseResponse> AddExpense(ExpenseAddRequest? expenseAddRequest)
         {
@@ -32,20 +35,20 @@ namespace Services
             //Model validation
             ValidationHelper.ModelValidation(expenseAddRequest);
 
-	    //expenseAddRequest -> Expense 
-	    Expense expense = expenseAddRequest.ToExpense();
+			//expenseAddRequest -> Expense 
+			Expense expense = expenseAddRequest.ToExpense();
 	
-	    // ID 생성
-	    expense.ExpenseID = Guid.NewGuid();
+			// ID 생성
+			expense.ExpenseID = Guid.NewGuid();
 	
-	    // 추가
-	    _db.Expenses.Add(expense);
-	    await _db.SaveChangesAsync();
+			// 추가
+			_db.Expenses.Add(expense);
+			await _db.SaveChangesAsync();
 	
-	    // expense -> ExpenseResponse 
-	    ExpenseResponse expenseResponse = expense.ToExpenseResponse();
+			// expense -> ExpenseResponse 
+			ExpenseResponse expenseResponse = expense.ToExpenseResponse();
 
-            return expenseResponse;
+			return expenseResponse;
         }
 
 	//지출내역 삭제하기
@@ -67,21 +70,26 @@ namespace Services
 	}
 
 	//첫 화면에 이번 달의 지출 내역을 보여준다 
-	public async Task<List<ExpenseResponse>> GetDefaultExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate)
+	public async Task<List<ExpenseResponse>> GetDefaultExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId)
 	{
-	    List<ExpenseResponse> allExpenses = await _db.Expenses.Select(temp => temp.ToExpenseResponse()).ToListAsync();
-            List<ExpenseResponse> results = new List<ExpenseResponse>();
+		Guid parsedUserId =  new Guid(userId);
 
-            toDate = DateTime.Today;
+		var expenseByUser = await _db.Expenses.Where(e => e.UserID == parsedUserId).ToListAsync();
+
+		List<ExpenseResponse> allExpenses = expenseByUser
+				.Select(temp => temp.ToExpenseResponse()).ToList();
+        List<ExpenseResponse> results = new List<ExpenseResponse>();
+
+        toDate = DateTime.Today;
             
-            fromDate = new DateTime(toDate.Value.Year, toDate.Value.Month, 1);
-            results = allExpenses.Where(temp => temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate).OrderBy(temp => temp.DateOfExpense).ToList();
+        fromDate = new DateTime(toDate.Value.Year, toDate.Value.Month, 1);
+        results = allExpenses.Where(temp => temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate).OrderBy(temp => temp.DateOfExpense).ToList();
 
 	    return results;
 	}
 
 	// 보이는 화면을 엑셀로 출력하기
-	public async Task<MemoryStream> GetExcelDataFromExpense(string name1, string name2, string name3, string name4, string name5)
+	public async Task<MemoryStream> GetExcelDataFromExpense(string searchBy, string searchString, string fromDate, string toDate, string sum, string userId)
 	{
 		MemoryStream memoryStream = new MemoryStream();
 
@@ -99,18 +107,23 @@ namespace Services
 			int row = 2;
 			List<ExpenseResponse> expenses = new List<ExpenseResponse>();
 
-			if (name1 == "00000")
+			if (searchBy == "00000")
 			{
-				List<ExpenseResponse> allexpenses = await _db.Expenses.Select(temp => temp.ToExpenseResponse()).ToListAsync();
+				Guid parsedUserId = new Guid(userId);
 
-				DateTime toDate = DateTime.Today;
-				DateTime fromDate = new DateTime(toDate.Year, toDate.Month, 1);
+				var expenseByUser = await _db.Expenses.Where(e => e.UserID == parsedUserId).ToListAsync();
 
-				expenses = allexpenses.Where(temp => temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate).OrderBy(temp => temp.DateOfExpense).ToList();
+				List<ExpenseResponse> allExpenses = expenseByUser
+						.Select(temp => temp.ToExpenseResponse()).ToList();
+
+				DateTime today = DateTime.Today;
+				DateTime fromFirstDate = new DateTime(today.Year, today.Month, 1);
+
+				expenses = allExpenses.Where(temp => temp.DateOfExpense >= fromFirstDate && temp.DateOfExpense <= today).OrderBy(temp => temp.DateOfExpense).ToList();
 			}
 			else
 			{
-				expenses = await GetSelectedExpenses(name1, name2, name3 != null ? Convert.ToDateTime(name3) : null, name4 != null ? Convert.ToDateTime(name4) : null);
+				expenses = await GetSelectedExpenses(searchBy, searchString, fromDate != null ? Convert.ToDateTime(fromDate) : null, toDate != null ? Convert.ToDateTime(toDate) : null, userId);
 			}
 
 
@@ -127,7 +140,7 @@ namespace Services
 				}
 				if (expenses.Count != 0 && row == expenses.Count + 1)
 				{
-					excelWorkSheet.Cells[row + 1, 6].Value = Double.Parse(name5);
+					excelWorkSheet.Cells[row + 1, 6].Value = Double.Parse(sum);
 				}
 
 				row++;
@@ -164,46 +177,51 @@ namespace Services
 
 
 	// 지출 조건에 따라 보여준다 
-	public async Task<List<ExpenseResponse>> GetSelectedExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate)
+	public async Task<List<ExpenseResponse>> GetSelectedExpenses(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId)
 	{
-		List<ExpenseResponse> allExpenses = await _db.Expenses.Select(temp => temp.ToExpenseResponse()).ToListAsync();
+		Guid parsedUserId = new Guid(userId);
+
+		var expenseByUser = await _db.Expenses.Where(e => e.UserID == parsedUserId).ToListAsync();
+
+		List<ExpenseResponse> allExpenses = expenseByUser
+				.Select(temp => temp.ToExpenseResponse()).ToList();
 		List<ExpenseResponse> results = new List<ExpenseResponse>();
 
 		// 항목만 선택했을 때
-	        if (searchBy != "NotSelected" && string.IsNullOrEmpty(searchString) && fromDate == null && toDate == null)
-	        {
-	                results = allExpenses.Where(temp => temp.ExpenseType.Equals(searchBy)).OrderBy(temp => temp.DateOfExpense).ToList();
+	    if (searchBy != "NotSelected" && string.IsNullOrEmpty(searchString) && fromDate == null && toDate == null)
+	    {
+	        results = allExpenses.Where(temp => temp.ExpenseType.Equals(searchBy)).OrderBy(temp => temp.DateOfExpense).ToList();
 			return results;
 		}
 	
 		// 검색어만 조회했을 때
-	        if (!string.IsNullOrEmpty(searchString) && (searchBy == "NotSelected") && fromDate == null && toDate == null) 
-	        {
-	                results = allExpenses.Where(temp => temp.ExpenseName.Contains(searchString)).OrderBy(temp => temp.DateOfExpense).ToList();
+	    if (!string.IsNullOrEmpty(searchString) && (searchBy == "NotSelected") && fromDate == null && toDate == null) 
+	    {
+	        results = allExpenses.Where(temp => temp.ExpenseName.Contains(searchString)).OrderBy(temp => temp.DateOfExpense).ToList();
 			return results;
 		}
 	
 		// 날짜로만 조회했을 때
-	        if (fromDate != null && toDate != null && (searchBy == "NotSelected") && string.IsNullOrEmpty(searchString)) 
-	        {
-	                results = allExpenses.Where(temp => temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate).OrderBy(temp => temp.DateOfExpense).ToList();
+	    if (fromDate != null && toDate != null && (searchBy == "NotSelected") && string.IsNullOrEmpty(searchString)) 
+	    {
+	        results = allExpenses.Where(temp => temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate).OrderBy(temp => temp.DateOfExpense).ToList();
 			return results;
 		}
 	
 		// 항목과 날짜로 조회했을 때
-	        if (searchBy != "NotSelected" && fromDate != null && toDate != null && string.IsNullOrEmpty(searchString))
-	        {
-	                results = allExpenses.Where(temp => (temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate) && (temp.ExpenseType.Equals(searchBy)))
-						        .OrderBy(temp => temp.DateOfExpense).ToList();
+	    if (searchBy != "NotSelected" && fromDate != null && toDate != null && string.IsNullOrEmpty(searchString))
+	    {
+	        results = allExpenses.Where(temp => (temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate) && (temp.ExpenseType.Equals(searchBy)))
+						    .OrderBy(temp => temp.DateOfExpense).ToList();
 	
 			return results;
 		}
 	
 		// 검색어와 날짜로 조회했을 때
-	        if (!string.IsNullOrEmpty(searchString) && fromDate != null && toDate != null && searchBy == "NotSelected")
-	        {
-	                results = allExpenses.Where(temp => (temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate) && (temp.ExpenseName.Contains(searchString)))
-								.OrderBy(temp => temp.DateOfExpense).ToList();
+	    if (!string.IsNullOrEmpty(searchString) && fromDate != null && toDate != null && searchBy == "NotSelected")
+	    {
+	        results = allExpenses.Where(temp => (temp.DateOfExpense >= fromDate && temp.DateOfExpense <= toDate) && (temp.ExpenseName.Contains(searchString)))
+							.OrderBy(temp => temp.DateOfExpense).ToList();
 	
 			return results;
 		}
@@ -262,8 +280,10 @@ namespace Services
 	}
 
 	// 엑셀 업로드 
-	public async Task<int> UploadExpenseFromExcelFile(IFormFile formFile)
+	public async Task<int> UploadExpenseFromExcelFile(IFormFile formFile, string userId)
 	{
+		Guid parsedUserId = new Guid(userId);
+
 		MemoryStream memoryStream = new MemoryStream();
 		await formFile.CopyToAsync(memoryStream);
 		int insertedCount = 0;
@@ -285,16 +305,15 @@ namespace Services
 
 				if (!string.IsNullOrEmpty(cellValue1) && !string.IsNullOrEmpty(cellValue2) && !string.IsNullOrEmpty(cellValue3) && !string.IsNullOrEmpty(cellValue4))
 				{
-					double p = 0;
-
+					double price = 0;
 
 					if (Regex.IsMatch(cellValue1, @"^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[0-1])$")
-						&& Double.TryParse(cellValue4, out p) &&
+						&& Double.TryParse(cellValue4, out price) &&
 						(cellValue3.Equals("주거비") || cellValue3.Equals("교통비") || cellValue3.Equals("장보기")
 						|| cellValue3.Equals("외식비") || cellValue3.Equals("쇼핑") || cellValue3.Equals("보험료")
 						|| cellValue3.Equals("기타")))
 					{
-						if (p >= 0)
+						if (price >= 0)
 						{
 							Expense expense = new Expense()
 							{
@@ -306,9 +325,11 @@ namespace Services
 								: cellValue3.Equals("외식비") ? "Food"
 								: cellValue3.Equals("쇼핑") ? "Shopping"
 								: cellValue3.Equals("보험료") ? "InsuranceFee" : "Other",
-								ExpenseAmount = p,
-								ExpenseRemark = cellValue5
+								ExpenseAmount = price,
+								ExpenseRemark = cellValue5,
+								UserID = parsedUserId
 							};
+
 							_db.Expenses.Add(expense);
 							await _db.SaveChangesAsync();
 

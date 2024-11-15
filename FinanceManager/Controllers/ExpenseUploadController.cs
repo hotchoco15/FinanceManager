@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities.IdentityEntities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using System.ComponentModel.Design;
 
@@ -9,9 +11,13 @@ namespace FinanceManager.Controllers
 	{
 		private readonly IExpenseService _expenseService;
 
-		public ExpenseUploadController(IExpenseService expenseService)
+		private readonly UserManager<ApplicationUser> _userManager;
+
+		public ExpenseUploadController(IExpenseService expenseService, UserManager<ApplicationUser> userManager)
 		{
 			_expenseService = expenseService;	
+
+			_userManager = userManager;
 		}
 
 		[Route("ExpenseUpload")]
@@ -25,13 +31,14 @@ namespace FinanceManager.Controllers
 		[Route("ExpenseUpload")]
 		public async Task<IActionResult> ExpenseUpload(IFormFile excelFile)
 		{
+			var userId = _userManager.GetUserId(User);
+
 			if (excelFile == null || excelFile.Length == 0) 
 			{
 				ViewBag.ErrorMessage = "작성 완료된 엑셀파일을 선택해주세요";
 				return View();
 			}
 
-			
 
 			if (!Path.GetExtension(excelFile.FileName).Equals(".xlsx",
 				StringComparison.OrdinalIgnoreCase))
@@ -41,7 +48,7 @@ namespace FinanceManager.Controllers
 			}
 
 
-			int insertedCount = await _expenseService.UploadExpenseFromExcelFile(excelFile);
+			int insertedCount = await _expenseService.UploadExpenseFromExcelFile(excelFile, userId);
 
 			if (insertedCount == 99999)
 			{

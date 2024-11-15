@@ -8,7 +8,9 @@ namespace ServiceContracts.DTO
 {
     public class IncomeResponse
     {
-        public Guid IncomeID { get; set; }
+		public Guid UserID { get; set; }
+
+		public Guid IncomeID { get; set; }
 
         public DateTime? DateOfIncome { get; set; }
 
@@ -25,6 +27,7 @@ namespace ServiceContracts.DTO
         {
             return new IncomeUpdateRequest()
             { 
+                UserID = UserID,
                 IncomeID = IncomeID,
                 DateOfIncome = DateOfIncome,
                 IncomeName = IncomeName,
@@ -42,6 +45,7 @@ namespace ServiceContracts.DTO
         {
             return new IncomeResponse()
             {
+                UserID = income.UserID,
                 IncomeID = income.IncomeID,
                 DateOfIncome = income.DateOfIncome,
                 IncomeName = income.IncomeName,
@@ -51,20 +55,20 @@ namespace ServiceContracts.DTO
             };
         }
 
-	public static string GetDisplayName(this string value)
-	{
-	    if (value == "MainIncome")
+	    public static string GetDisplayName(this string value)
 	    {
-		return "주수입";
-	    }
+	        if (value == "MainIncome")
+	        {
+		        return "주수입";
+	        }
             else if (value == "ExtraIncome")
             {
                 return "부수입";
-	    }
+	        }
             else 
             { 
                 return "없음"; 
             }
-	}
-     }
+	    }
+    }
 }

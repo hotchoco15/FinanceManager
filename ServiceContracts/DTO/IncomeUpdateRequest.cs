@@ -9,6 +9,8 @@ namespace ServiceContracts.DTO
 {
 	public class IncomeUpdateRequest
 	{
+		public Guid UserID { get; set; }
+
 		public Guid IncomeID { get; set; }
 	
 		[Required(ErrorMessage = "이름은 필수항목입니다.")]
@@ -29,6 +31,7 @@ namespace ServiceContracts.DTO
 		{
 			return new Income
 			{
+				UserID = UserID,
 				IncomeName = IncomeName,
 				DateOfIncome = DateOfIncome,
 				IncomeType = IncomeType.ToString(),

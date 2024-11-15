@@ -73,21 +73,26 @@ namespace Services
 
 
 	//첫 화면에 이번 달의 수입 내역을 보여주기 
-	public async Task<List<IncomeResponse>> GetDefaultIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate)
+	public async Task<List<IncomeResponse>> GetDefaultIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId)
 	{
-	    List<IncomeResponse> allIncomes = await _db.Incomes.Select(temp => temp.ToIncomeResponse()).ToListAsync();
-            List<IncomeResponse> results = new List<IncomeResponse>();
+		Guid parsedUserId = new Guid(userId);
 
-            toDate = DateTime.Today;
+		var incomeByUser = await _db.Incomes.Where(e => e.UserID == parsedUserId).ToListAsync();
+
+		List<IncomeResponse> allIncomes = incomeByUser
+				.Select(temp => temp.ToIncomeResponse()).ToList();
+		List<IncomeResponse> results = new List<IncomeResponse>();
+
+        toDate = DateTime.Today;
             
-            fromDate = new DateTime(toDate.Value.Year, toDate.Value.Month, 1);
-            results = allIncomes.Where(temp => temp.DateOfIncome >= fromDate && temp.DateOfIncome <= toDate).OrderBy(temp => temp.DateOfIncome).ToList();
+        fromDate = new DateTime(toDate.Value.Year, toDate.Value.Month, 1);
+        results = allIncomes.Where(temp => temp.DateOfIncome >= fromDate && temp.DateOfIncome <= toDate).OrderBy(temp => temp.DateOfIncome).ToList();
 
 	    return results;
 	}
 
 	// 보이는 화면을 엑셀로 출력하기
-	public async Task<MemoryStream> GetExcelDataFromIncome(string name1, string name2, string name3, string name4, string name5)
+	public async Task<MemoryStream> GetExcelDataFromIncome(string searchBy, string searchString, string fromDate, string toDate, string sum, string userId)
 	{
 		MemoryStream memoryStream = new MemoryStream();
 
@@ -105,18 +110,23 @@ namespace Services
 			int row = 2;
 			List<IncomeResponse> incomes = new List<IncomeResponse>();
 
-			if (name1 == "00000")
+			if (searchBy == "00000")
 			{
-				List<IncomeResponse> allIncomes = await _db.Incomes.Select(temp => temp.ToIncomeResponse()).ToListAsync();
-				
-				DateTime toDate = DateTime.Today;
-				DateTime fromDate = new DateTime(toDate.Year, toDate.Month, 1);
+				Guid parsedUserId = new Guid(userId);
 
-				incomes = allIncomes.Where(temp => temp.DateOfIncome >= fromDate && temp.DateOfIncome <= toDate).OrderBy(temp => temp.DateOfIncome).ToList();
+				var incomeByUser = await _db.Incomes.Where(e => e.UserID == parsedUserId).ToListAsync();
+
+				List<IncomeResponse> allIncomes = incomeByUser
+						.Select(temp => temp.ToIncomeResponse()).ToList();
+
+				DateTime today = DateTime.Today;
+				DateTime fromFirstDate = new DateTime(today.Year, today.Month, 1);
+
+				incomes = allIncomes.Where(temp => temp.DateOfIncome >= fromFirstDate && temp.DateOfIncome <= today).OrderBy(temp => temp.DateOfIncome).ToList();
 			}
 			else
 			{
-				incomes = await GetSelectedIncomes(name1, name2, name3 != null? Convert.ToDateTime(name3) : null, name4 != null ? Convert.ToDateTime(name4) : null);
+				incomes = await GetSelectedIncomes(searchBy, searchString, fromDate != null? Convert.ToDateTime(fromDate) : null, toDate != null ? Convert.ToDateTime(toDate) : null, userId);
 			}
 
 			
@@ -133,7 +143,7 @@ namespace Services
 				}
 				if (incomes.Count != 0 && row == incomes.Count+1)
 				{
-					excelWorkSheet.Cells[row + 1, 6].Value = Double.Parse(name5);
+					excelWorkSheet.Cells[row + 1, 6].Value = Double.Parse(sum);
 				}
 
 				row++;
@@ -171,9 +181,14 @@ namespace Services
 
 
 	// 수입 조건에 따라 보여주기
-	public async Task<List<IncomeResponse>> GetSelectedIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate)
+	public async Task<List<IncomeResponse>> GetSelectedIncomes(string? searchBy, string? searchString, DateTime? fromDate, DateTime? toDate, string userId)
 	{
-		List<IncomeResponse> allIncomes = await _db.Incomes.Select(temp => temp.ToIncomeResponse()).ToListAsync();
+		Guid parsedUserId = new Guid(userId);
+
+		var incomeByUser = await _db.Incomes.Where(e => e.UserID == parsedUserId).ToListAsync();
+
+		List<IncomeResponse> allIncomes = incomeByUser
+				.Select(temp => temp.ToIncomeResponse()).ToList(); 	
 		List<IncomeResponse> results = new List<IncomeResponse>();
 
 		// 항목만 선택했을 때
@@ -234,8 +249,6 @@ namespace Services
 		}
 
 
-
-
 		return results;
 	}
 
@@ -271,8 +284,10 @@ namespace Services
 
 
 	// 엑셀 업로드 
-	public async Task<int> UploadIncomeFromExcelFile(IFormFile formFile)
+	public async Task<int> UploadIncomeFromExcelFile(IFormFile formFile, string userId)
 	{
+		Guid parsedUserId = new Guid(userId);
+
 		MemoryStream memoryStream = new MemoryStream();
 		await formFile.CopyToAsync(memoryStream);
 		int insertedCount = 0;
@@ -294,23 +309,25 @@ namespace Services
 
 				if (!string.IsNullOrEmpty(cellValue1) && !string.IsNullOrEmpty(cellValue2) && !string.IsNullOrEmpty(cellValue3) && !string.IsNullOrEmpty(cellValue4))
 				{
-					double p = 0;
+					double price = 0;
 
 
 					if (Regex.IsMatch(cellValue1, @"^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[0-1])$")
-						&& Double.TryParse(cellValue4, out p) &&
+						&& Double.TryParse(cellValue4, out price) &&
 						(cellValue3.Equals("주수입") || cellValue3.Equals("부수입")))
 					{
-						if (p >= 0)
+						if (price >= 0)
 						{
 							Income income = new Income()
 							{
 								DateOfIncome = DateTime.Parse(cellValue1),
 								IncomeName = cellValue2,
 								IncomeType = cellValue3.Equals("주수입") ? "MainIncome" : "ExtraIncome",
-								IncomeAmount = p,
-								IncomeRemark = cellValue5
+								IncomeAmount = price,
+								IncomeRemark = cellValue5,
+								UserID = parsedUserId
 							};
+
 							_db.Incomes.Add(income);
 							await _db.SaveChangesAsync();
 

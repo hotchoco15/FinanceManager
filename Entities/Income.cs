@@ -9,18 +9,20 @@ namespace Entities
     	{
 	        [Key]
 	        public Guid IncomeID { get; set; }
-	
-	        public DateTime? DateOfIncome {  get; set; }
+
+			public Guid UserID { get; set; }
+
+			public DateTime? DateOfIncome {  get; set; }
 	
 	        [StringLength(40)]
 	        public string? IncomeName { get; set;}
 	
-		[StringLength(40)]
-		public string? IncomeType { get; set; }
+			[StringLength(40)]
+			public string? IncomeType { get; set; }
 	
 	        public double? IncomeAmount { get; set; }
 	
-		[StringLength(40)]
-		public string? IncomeRemark { get; set; }
+			[StringLength(40)]
+			public string? IncomeRemark { get; set; }
     	}
 }

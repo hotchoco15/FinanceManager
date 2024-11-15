@@ -56,6 +56,7 @@ namespace FinanceManager.Controllers
 			{
 				if (registerDTO.UserType == ServiceContracts.Enums.UserTypeOptions.Admin)
 				{
+					// Admin role 생성
 					if (await _roleManager.FindByNameAsync(UserTypeOptions.Admin.ToString()) is null)
 					{
 						ApplicationRole applicationRole = new ApplicationRole()
@@ -63,10 +64,20 @@ namespace FinanceManager.Controllers
 						await _roleManager.CreateAsync(applicationRole);
 					}
 
+					// Admin role 에 새로운 사용자 추가
 					await _userManager.AddToRoleAsync(user, UserTypeOptions.Admin.ToString());
 				}
 				else
 				{
+					// User role 생성
+					if (await _roleManager.FindByNameAsync(UserTypeOptions.User.ToString()) is null)
+					{
+						ApplicationRole applicationRole = new ApplicationRole()
+						{ Name = UserTypeOptions.User.ToString() };
+						await _roleManager.CreateAsync(applicationRole);
+					}
+
+					// User role 에 새로운 사용자 추가
 					await _userManager.AddToRoleAsync(user, UserTypeOptions.User.ToString());
 				}
 
@@ -99,7 +110,7 @@ namespace FinanceManager.Controllers
 		[Route("[action]")]
 		[HttpPost]
         [Authorize("NotAuthorized")]
-        public async Task<IActionResult> Login(LoginDTO loginDTO, string? ReturnUrl)
+		public async Task<IActionResult> Login(LoginDTO loginDTO, string? ReturnUrl)
 		{
 			if (ModelState.IsValid == false)
 			{

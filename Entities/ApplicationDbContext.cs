@@ -20,24 +20,24 @@ namespace Entities
 			modelBuilder.Entity<Expense>().ToTable("Expenses");
 
 			//수입 데이터 추가
-			string incomesJson = System.IO.File.ReadAllText("incomes.json");
-			List<Income> incomes =
-			System.Text.Json.JsonSerializer.Deserialize<List<Income>>(incomesJson);
+			//string incomesJson = System.IO.File.ReadAllText("incomes.json");
+			//List<Income> incomes =
+			//System.Text.Json.JsonSerializer.Deserialize<List<Income>>(incomesJson);
 
-			foreach(Income income in incomes)
-			{
-				modelBuilder.Entity<Income>().HasData(income);
-			}
+			//foreach(Income income in incomes)
+			//{
+			//	modelBuilder.Entity<Income>().HasData(income);
+			//}
 
 			//지출 데이터 추가
-			string expensesJson = System.IO.File.ReadAllText("expenses.json");
-			List<Expense> expenses =
-			System.Text.Json.JsonSerializer.Deserialize<List<Expense>>(expensesJson);
+			//string expensesJson = System.IO.File.ReadAllText("expenses.json");
+			//List<Expense> expenses =
+			//System.Text.Json.JsonSerializer.Deserialize<List<Expense>>(expensesJson);
 
-			foreach (Expense expense in expenses)
-			{
-				modelBuilder.Entity<Expense>().HasData(expense);
-			}
+			//foreach (Expense expense in expenses)
+			//{
+			//	modelBuilder.Entity<Expense>().HasData(expense);
+			//}
 
 		}
 	}
