@@ -3,6 +3,9 @@
 @{
 	ViewBag.Title = "수입";
 	ViewBag.CurrentUrl = "~/Income/Index";
+	var currentPage = ViewBag.CurrentPage;
+	var totalPage = ViewBag.TotalPage;
+	int i = 0;
 }
 
 <form asp-controller="Income" asp-action="Index" method="get">
@@ -108,6 +111,23 @@
 			}
 		</tbody>
 	</table>
+	<div>
+		<ul class="paging">
+			@if (currentPage > 1)
+			{
+				<li><a href="@Url.Action("Index", "Income", new {page = currentPage - 1})">이전</a></li>
+			}
+			@for (i = 1; i <= totalPage; i++)
+			{
+				<li><a href="@Url.Action("Index", "Income", new {page = i})">@i</a></li>
+			}
+			@if (currentPage < totalPage)
+			{
+				<li><a href="@Url.Action("Index", "Income", new {page = currentPage + 1})">이후</a></li>
+			}
+
+		</ul>
+	</div>
 </form>
 
 <script>

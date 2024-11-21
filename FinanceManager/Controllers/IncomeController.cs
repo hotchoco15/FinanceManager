@@ -27,7 +27,7 @@ namespace FinanceManager.Controllers
         }
 
         [Route("[action]")]
-        public async Task<IActionResult> Index(string? searchBy = null, string? searchString = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<IActionResult> Index(string? searchBy = null, string? searchString = null, DateTime? fromDate = null, DateTime? toDate = null, int page = 1, int pageSize = 2)
         {
 			var userId = _userManager.GetUserId(User);
 
@@ -54,7 +54,7 @@ namespace FinanceManager.Controllers
                 ViewBag.FromDate = fromDate;
 
 
-                if (incomes.Count > 0)
+				if (incomes.Count > 0)
                 {
                     ViewBag.Last = incomes.Last().IncomeID;
                     ViewBag.Sum = incomes.Sum(i => i.IncomeAmount);
@@ -65,7 +65,14 @@ namespace FinanceManager.Controllers
                 fromDate = null;
                 toDate = null;
 
-                return View(incomes);
+                var pagenatedIncomes = await _incomeService.GetPages(incomes, page, pageSize);
+
+				ViewBag.CurrentPage = page;
+				ViewBag.TotalPage = pagenatedIncomes.TotalPage;
+
+                var result = pagenatedIncomes.Data.ToList();
+
+				return View(result);
             }
 
             else 
@@ -79,7 +86,8 @@ namespace FinanceManager.Controllers
 		        List<IncomeResponse> filteredIncomes = await _incomeService.GetSelectedIncomes(searchBy, searchString, fromDate, toDate, userId);
 
 
-                if (filteredIncomes.Count > 0)
+
+				if (filteredIncomes.Count > 0)
                 { 
                     ViewBag.Last = filteredIncomes.Last().IncomeID;
                     ViewBag.Sum = filteredIncomes.Sum(i => i.IncomeAmount);	
@@ -89,8 +97,15 @@ namespace FinanceManager.Controllers
                     ViewBag.Message = "empty";
 		        }
 
-		        return View(filteredIncomes);
-	        }
+				var pagenatedIncomes = await _incomeService.GetPages(filteredIncomes, page, pageSize);
+
+				ViewBag.CurrentPage = page;
+				ViewBag.TotalPage = pagenatedIncomes.TotalPage;
+
+				var result = pagenatedIncomes.Data.ToList();
+
+				return View(result);
+			}
         }
 
         [Route("[action]")]

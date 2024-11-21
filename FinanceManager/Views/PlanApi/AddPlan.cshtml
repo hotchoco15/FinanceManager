@@ -1,0 +1,74 @@
+﻿@model PlanDTO
+
+@{
+	ViewBag.Title = "목표 추가";
+	ViewBag.CurrentUrl = "~/PlanApi/AddPlan";
+}
+
+<form asp-controller="PlanApi" asp-action="AddPlan" method="post">
+	<span class="text1"><h1>목표 추가하기</h1></span>
+
+	<div class="item">
+		<div>
+			<label asp-for="UserName">이름</label>
+			<input type="text" asp-for="UserName" />
+			<span asp-validation-for="UserName" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="PlanName">목표명</label>
+			<input type="text" asp-for="PlanName" />
+			<span asp-validation-for="PlanName" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="TargetDate">목표일</label>
+			<input type="date" asp-for="TargetDate" />
+			<span asp-validation-for="TargetDate" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="TargetAmount">목표 금액</label>
+			<input type="number" asp-for="TargetAmount" />
+			<span asp-validation-for="TargetAmount" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="Amount">오늘 모은 금액</label>
+			<input type="number" asp-for="Amount" />
+			<span asp-validation-for="Amount" class="red"></span>
+		</div>
+
+		<div>
+			<label asp-for="CurrentDate">오늘 날짜</label>
+			<input type="date" asp-for="CurrentDate" readonly />
+		</div>
+
+		<div>
+			<button class="addbutton" type="submit">저장</button>
+			@if (ViewBag.Errors != null)
+			{
+				<div>
+					<ul>
+						@foreach (string error in ViewBag.Errors)
+						{
+							<li>@error</li>
+						}
+					</ul>
+				</div>
+			}
+		</div>
+
+	</div>
+
+</form>
+
+
+@section scripts
+{
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" asp-fallback-test="window.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.4/jquery.validate.min.js" asp-fallback-test="window.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js" asp-fallback-test="window.jQuery.validator.unobstrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -46,56 +46,12 @@ namespace Entities.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("ExpenseID");
 
                     b.ToTable("Expenses", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            ExpenseID = new Guid("76a87f9b-49e2-4f85-a2a1-6988615852c8"),
-                            DateOfExpense = new DateTime(2024, 10, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExpenseAmount = 65000.0,
-                            ExpenseName = "교통비",
-                            ExpenseRemark = "",
-                            ExpenseType = "Transportation"
-                        },
-                        new
-                        {
-                            ExpenseID = new Guid("ad739691-ff88-4e3e-b698-83b9072a24ef"),
-                            DateOfExpense = new DateTime(2024, 10, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExpenseAmount = 75000.0,
-                            ExpenseName = "옷",
-                            ExpenseRemark = "",
-                            ExpenseType = "Shopping"
-                        },
-                        new
-                        {
-                            ExpenseID = new Guid("75c4cd52-53f7-4416-aa60-c17ab75a8689"),
-                            DateOfExpense = new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExpenseAmount = 9000.0,
-                            ExpenseName = "점심",
-                            ExpenseRemark = "",
-                            ExpenseType = "Food"
-                        },
-                        new
-                        {
-                            ExpenseID = new Guid("10251e15-5615-4c4f-87ce-69c0ea504afe"),
-                            DateOfExpense = new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExpenseAmount = 3500.0,
-                            ExpenseName = "카페",
-                            ExpenseRemark = "",
-                            ExpenseType = "Food"
-                        },
-                        new
-                        {
-                            ExpenseID = new Guid("2a5ef37f-9255-4f60-9c89-a0a8b6aea114"),
-                            DateOfExpense = new DateTime(2024, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ExpenseAmount = 32000.0,
-                            ExpenseName = "보험료",
-                            ExpenseRemark = "",
-                            ExpenseType = "InsuranceFee"
-                        });
                 });
 
             modelBuilder.Entity("Entities.IdentityEntities.ApplicationRole", b =>
@@ -219,55 +175,54 @@ namespace Entities.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("IncomeID");
 
                     b.ToTable("Incomes", (string)null);
+                });
+
+            modelBuilder.Entity("Entities.Plan", b =>
+                {
+                    b.Property<Guid>("PlanID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CurrentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PlanName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TargetAmount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("TargetDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PlanID");
+
+                    b.ToTable("Plans", (string)null);
 
                     b.HasData(
                         new
                         {
-                            IncomeID = new Guid("16800ece-bae7-410b-9d20-fe4265951695"),
-                            DateOfIncome = new DateTime(2024, 9, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IncomeAmount = 1000000.0,
-                            IncomeName = "월급",
-                            IncomeRemark = "",
-                            IncomeType = "MainIncome"
-                        },
-                        new
-                        {
-                            IncomeID = new Guid("3fad9624-8bb7-43b4-8481-4b189cca54a4"),
-                            DateOfIncome = new DateTime(2024, 9, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IncomeAmount = 50000.0,
-                            IncomeName = "로또",
-                            IncomeRemark = "",
-                            IncomeType = "ExtraIncome"
-                        },
-                        new
-                        {
-                            IncomeID = new Guid("36feeb02-a3be-464f-a0b3-f2ece81f7137"),
-                            DateOfIncome = new DateTime(2024, 9, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IncomeAmount = 12500.0,
-                            IncomeName = "앱테크",
-                            IncomeRemark = "",
-                            IncomeType = "ExtraIncome"
-                        },
-                        new
-                        {
-                            IncomeID = new Guid("b80e20c8-dc39-4330-8242-671cb946f463"),
-                            DateOfIncome = new DateTime(2024, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IncomeAmount = 1000000.0,
-                            IncomeName = "월급",
-                            IncomeRemark = "",
-                            IncomeType = "MainIncome"
-                        },
-                        new
-                        {
-                            IncomeID = new Guid("a5501da1-bb27-4bcb-9e85-dda63ab9bbcf"),
-                            DateOfIncome = new DateTime(2024, 10, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IncomeAmount = 15000.0,
-                            IncomeName = "포인트환급",
-                            IncomeRemark = "",
-                            IncomeType = "ExtraIncome"
+                            PlanID = new Guid("bd318ece-932a-4b52-bccc-a954c3e4319a"),
+                            Amount = 50000.0,
+                            CurrentDate = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PlanName = "이사",
+                            TargetAmount = 10000000.0,
+                            TargetDate = new DateTime(2028, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "qwer"
                         });
                 });
 

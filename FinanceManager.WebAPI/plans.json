@@ -1,0 +1,11 @@
+[
+  {
+    "PlanID": "BD318ECE-932A-4B52-BCCC-A954C3E4319A",
+    "UserName": "qwer",
+    "PlanName": "이사",
+    "TargetDate": "2028-05-05",
+    "TargetAmount": 10000000,
+    "CurrentDate": "2024-11-20",
+	"Amount": 50000
+  }
+]

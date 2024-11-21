@@ -4,16 +4,19 @@ using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace FinanceManager.Migrations
+namespace Entities.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120095651_AddPlanTables")]
+    partial class AddPlanTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,36 +55,6 @@ namespace FinanceManager.Migrations
                     b.HasKey("ExpenseID");
 
                     b.ToTable("Expenses", (string)null);
-                });
-
-            modelBuilder.Entity("Entities.Goal", b =>
-                {
-                    b.Property<Guid>("GoalID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("CurrentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GoalName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("TargetAmount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("TargetDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("GoalID");
-
-                    b.ToTable("Goals", (string)null);
                 });
 
             modelBuilder.Entity("Entities.IdentityEntities.ApplicationRole", b =>
@@ -211,6 +184,49 @@ namespace FinanceManager.Migrations
                     b.HasKey("IncomeID");
 
                     b.ToTable("Incomes", (string)null);
+                });
+
+            modelBuilder.Entity("Entities.Plan", b =>
+                {
+                    b.Property<Guid>("PlanID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CurrentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PlanName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TargetAmount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("TargetDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PlanID");
+
+                    b.ToTable("Plans", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            PlanID = new Guid("bd318ece-932a-4b52-bccc-a954c3e4319a"),
+                            Amount = 50000.0,
+                            CurrentDate = new DateTime(2024, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PlanName = "이사",
+                            TargetAmount = 10000000.0,
+                            TargetDate = new DateTime(2028, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "qwer"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

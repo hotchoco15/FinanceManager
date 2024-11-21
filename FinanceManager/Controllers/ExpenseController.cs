@@ -28,7 +28,7 @@ namespace FinanceManager.Controllers
         }
 
         [Route("[action]")]
-        public async Task<IActionResult> Index(string? searchBy = null, string? searchString = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<IActionResult> Index(string? searchBy = null, string? searchString = null, DateTime? fromDate = null, DateTime? toDate = null, int page = 1, int pageSize = 2)
         {
 			var userId = _userManager.GetUserId(User);
 
@@ -70,8 +70,15 @@ namespace FinanceManager.Controllers
 		        fromDate = null;
                 toDate = null;
 
-				return View(expenses);
-            }
+				var pagenatedExpenses = await _expenseService.GetPages(expenses, page, pageSize);
+
+				ViewBag.CurrentPage = page;
+				ViewBag.TotalPage = pagenatedExpenses.TotalPage;
+
+				var result = pagenatedExpenses.Data.ToList();
+
+				return View(result);
+			}
 
             else 
             {
@@ -93,8 +100,15 @@ namespace FinanceManager.Controllers
                     ViewBag.Message = "empty";
                 }
 
-				return View(filteredExpenses);
-	        }
+				var pagenatedExpenses = await _expenseService.GetPages(filteredExpenses, page, pageSize);
+
+				ViewBag.CurrentPage = page;
+				ViewBag.TotalPage = pagenatedExpenses.TotalPage;
+
+				var result = pagenatedExpenses.Data.ToList();
+
+				return View(result);
+			}
         }
 
         [Route("[action]")]

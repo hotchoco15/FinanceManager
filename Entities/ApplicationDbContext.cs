@@ -8,9 +8,17 @@ namespace Entities
 {
 	public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 	{
-		public ApplicationDbContext(DbContextOptions options) : base(options){}
+		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options){}
+
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			base.OnConfiguring(optionsBuilder);
+		}
+
 		public DbSet<Income> Incomes { get; set; }
 		public DbSet<Expense> Expenses { get; set; }
+
+		public DbSet<Plan> Plans { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -18,6 +26,8 @@ namespace Entities
 
 			modelBuilder.Entity<Income>().ToTable("Incomes");
 			modelBuilder.Entity<Expense>().ToTable("Expenses");
+			modelBuilder.Entity<Plan>().ToTable("Plans");
+
 
 			//수입 데이터 추가
 			//string incomesJson = System.IO.File.ReadAllText("incomes.json");
@@ -37,6 +47,16 @@ namespace Entities
 			//foreach (Expense expense in expenses)
 			//{
 			//	modelBuilder.Entity<Expense>().HasData(expense);
+			//}
+
+			//목표 데이터 추가
+			//string plansJson = System.IO.File.ReadAllText("plans.json");
+			//List<Plan> plans =
+			//System.Text.Json.JsonSerializer.Deserialize<List<Plan>>(plansJson);
+
+			//foreach (Plan plan in plans)
+			//{
+			//	modelBuilder.Entity<Plan>().HasData(plans);
 			//}
 
 		}

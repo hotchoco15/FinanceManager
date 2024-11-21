@@ -247,19 +247,14 @@ h3
 
 
 
-
-
-
-
-.item 
-{
+.item {
     margin: 50px auto;
-    padding: 20px; 
+    padding: 20px;
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
     width: 90%;
-    gap: 20px; 
+    gap: 20px;
 }
 
 .item label
@@ -392,3 +387,21 @@ h3
     color: red;
 }
 
+.paging {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+}
+
+
+.paging li {
+    margin: 0 5px;
+}
+
+
+.paging li a {
+    text-decoration: none;
+    padding: 8px 12px;
+    color: #007bff;
+}

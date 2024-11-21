@@ -1,0 +1,59 @@
+﻿@model IEnumerable<PlanDTO>
+
+@{
+	ViewBag.Title = "목표 조회";
+	ViewBag.CurrentUrl = "~/PlanApi/Index";
+	var currentPage = ViewBag.CurrentPage;
+	var totalPage = ViewBag.TotalPage;
+	int i = 0;
+}
+
+<form asp-controller="PlanApi" asp-action="Index" method="get">
+	<div>
+		<span class="text1"><h1>저축 목표 조회</h1></span>
+		<span class="text2"><a asp-controller="PlanApi" asp-action="AddPlan"><h2>목표 추가</h2></a></span>
+	</div>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>목표명</th>
+				<th>목표일</th>
+				<th>목표 금액</th>
+				<th>오늘 모은 금액</th>
+				<th>모은 날짜</th>
+				<th>이름</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (PlanDTO planDto in Model)
+			{
+				<tr>
+					<td style="width:15.5%">@planDto.PlanName</td>
+					<td style="width:15.5%">@planDto.TargetDate.ToString("yyyy-MM-dd")</td>
+					<td style="width:15.5%">@String.Format("{0:N}", planDto.TargetAmount)</td>
+					<td style="width:15.5%">@String.Format("{0:N}", planDto.Amount)</td>
+					<td style="width:15.5%">@planDto.CurrentDate.ToString("yyyy-MM-dd")</td>
+					<td style="width:15.5%">@planDto.UserName</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<div>
+		<ul class ="paging">
+			@if(currentPage > 1)
+			{
+				<li><a href="@Url.Action("Index", "PlanApi", new {page = currentPage - 1})">이전</a></li>
+			}
+			@for(i = 1; i <= totalPage; i++)
+			{
+				<li><a href="@Url.Action("Index", "PlanApi", new {page = i})">@i</a></li>
+			}
+			@if(currentPage < totalPage)
+			{
+				<li><a href="@Url.Action("Index", "PlanApi", new {page = currentPage + 1})">이후</a></li>
+			}
+
+		</ul>
+	</div>
+</form>

@@ -77,11 +77,21 @@ namespace ServiceContracts
 
 
 		/// <summary>
-		/// 엑셀에 있는 내역을 DB에 저장합니다다
+		/// 엑셀에 있는 내역을 DB에 저장합니다
 		/// </summary>
 		/// <param name="formFile"></param>
 		/// <returns></returns>
 		Task<int> UploadIncomeFromExcelFile(IFormFile formFile, string userId);
 
-    }
+
+		/// <summary>
+		/// 페이징하여 보여줍니다
+		/// </summary>
+		/// <param name="list"></param>
+		/// <param name="page"></param>
+		/// <param name="pageSize"></param>
+		/// <returns></returns>
+		Task<PagingResponse<IncomeResponse>> GetPages(List<IncomeResponse> list, int page, int pageSize);
+
+	}
 }

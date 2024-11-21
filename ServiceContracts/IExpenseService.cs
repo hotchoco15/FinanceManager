@@ -79,5 +79,15 @@ namespace ServiceContracts
 		/// <param name="formFile"></param>
 		/// <returns></returns>
 		Task<int> UploadExpenseFromExcelFile(IFormFile formFile, string userId);
+
+
+		/// <summary>
+		/// 페이징하여 보여줍니다
+		/// </summary>
+		/// <param name="list"></param>
+		/// <param name="page"></param>
+		/// <param name="pageSize"></param>
+		/// <returns></returns>
+		Task<PagingResponse<ExpenseResponse>> GetPages(List<ExpenseResponse> list, int page, int pageSize);
 	}
 }

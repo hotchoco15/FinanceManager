@@ -72,6 +72,15 @@
                 {
                     <a asp-controller="Account" asp-action="Login">로그인</a>
                 }
+
+                @if (ViewBag.CurrentUrl == "~/PlanApi/Index")
+                {
+                    <a asp-controller="PlanApi" asp-action="Index" class="underline">익명게시판</a>
+                }
+                else
+                {
+                    <a asp-controller="PlanApi" asp-action="Index">익명게시판</a>
+                }
                 </li>
             }
             </ul>
